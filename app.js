@@ -972,17 +972,9 @@ const sections = [
         visible: (state) => includesPurchaseMode(state),
       },
       {
-        id: "purchaseBudget",
-        label: "2.2. Ile maksymalnie chcesz przeznaczyć na sam zakup nieruchomości?",
-        type: "number",
-        min: 0,
-        step: 10000,
-        visible: (state) => includesPurchaseMode(state),
-      },
-      {
         id: "financing",
-        label: "2.5. Jak planujesz sfinansować zakup?",
-        type: "single",
+        label: "2.2. Jak planujesz sfinansować zakup?",
+        type: "multi",
         options: [
           "gotówka",
           "kredyt wstępnie sprawdzony",
@@ -1002,7 +994,7 @@ const sections = [
     fields: [
       {
         id: "rentBudget",
-        label: "2.6. Jaki miesięczny budżet na najem bierzesz pod uwagę?",
+        label: "2.3. Jaki miesięczny budżet na najem bierzesz pod uwagę?",
         type: "number",
         min: 0,
         step: 100,
@@ -1766,7 +1758,7 @@ function renderNumberField(field) {
       ? "Liczba dorosłych"
       : field.id === "children"
         ? "Liczba dzieci"
-        : field.id === "purchaseBudget" || field.id === "renovationBudget"
+        : field.id === "renovationBudget"
           ? "Kwota w zł"
           : field.id === "rentBudget"
             ? "Kwota miesięczna w zł"
@@ -2759,6 +2751,8 @@ function normalizeState() {
 
   if (!includesPurchaseMode(state)) {
     delete state.financing;
+  } else if (typeof state.financing === "string" && state.financing) {
+    state.financing = [state.financing];
   }
 
   const availableDistricts = new Set(getDistrictOptions(state));
